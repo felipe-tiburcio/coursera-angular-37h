@@ -23,6 +23,10 @@
       <button mat-button>SHARE</button>
     </mat-card-actions>
   </mat-card>
+  <div fxFlex [hidden]="dish">
+    <mat-spinner></mat-spinner>
+    <h4>Loading... Please Wait!</h4>
+  </div>
 </div>
 
 <!-- Comments -->
@@ -39,4 +43,8 @@
       </mat-list-item>
     </mat-list>
   </mat-card>
+  <div fxFlex [hidden]="dish">
+    <mat-spinner></mat-spinner>
+    <h4>Loading... Please Wait!</h4>
+  </div>
 </div>
