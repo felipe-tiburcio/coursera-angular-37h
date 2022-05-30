@@ -67,7 +67,7 @@ export class DishdetailComponent implements OnInit {
       rating: [ 5, [] ],
       comment: [ '', [Validators.required] ],
       author: [ '', [Validators.required, Validators.minLength(2), Validators.maxLength(25)] ],
-      date: [ this.getDate(), [] ]
+      date: [ '', [] ]
     });
     this.form.valueChanges
       .subscribe(data => this.onValueChanged(data));
@@ -104,6 +104,7 @@ export class DishdetailComponent implements OnInit {
   }
 
   onSubmit() {
+    this.form.value.date = this.getDate();
     this.getDate();
     this.dish.comments.push(this.form.value);
     this.form.reset();
