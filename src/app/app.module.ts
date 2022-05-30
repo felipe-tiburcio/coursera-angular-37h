@@ -13,7 +13,8 @@ import { MatListModule,
           MatCheckboxModule, 
           MatSelectModule, 
           MatSlideToggleModule, 
-          MatProgressSpinnerModule
+          MatProgressSpinnerModule,
+          MatSliderModule
         } from '@angular/material';
 
 import { AppComponent } from './app.component';
@@ -61,6 +62,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatFormFieldModule,
     MatInputModule,
     MatCheckboxModule,
+    MatSliderModule,
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Params, ActivatedRoute } from '@angular/router';
 import { Location } from "@angular/common";
 import { Dish } from '../shared/dish';
 import { DishService } from '../services/dish.service';
 import { switchMap } from 'rxjs/operators';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-dishdetail',
@@ -18,11 +19,40 @@ export class DishdetailComponent implements OnInit {
   prev: string;
   next: string;
 
+  month: any;
+  day: any;
+  year: any;
+
+  form: FormGroup;
+
+  @ViewChild('fform') formDirective;
+
+  formErrors = {
+    'rating': '',
+    'comment': '',
+    'author': '',
+    'date': ''
+  };
+
+  validationMessages = {
+    'author': {
+      'required':      'Author is required.',
+      'minlength':     'Author must be at least 2 characters long.',
+      'maxlength':     'Author cannot be more than 25 characters long.'
+    },
+    'comment': {
+      'required':      'Comment is required.',
+    },
+  };
+
   constructor(
     private dishService: DishService,
     private route: ActivatedRoute, 
-    private location: Location
-  ) {};
+    private location: Location,
+    private fb: FormBuilder
+  ) {
+    this.createForm();
+  };
 
   ngOnInit() {
     this.dishService.getDishIds()
@@ -30,6 +60,37 @@ export class DishdetailComponent implements OnInit {
     this.route.params
       .pipe(switchMap((params: Params) => this.dishService.getDish(params["id"])))
       .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id)});
+  }
+
+  createForm() {
+    this.form = this.fb.group({
+      rating: [ 5, [] ],
+      comment: [ '', [Validators.required] ],
+      author: [ '', [Validators.required, Validators.minLength(2), Validators.maxLength(25)] ],
+      date: [ this.getDate(), [] ]
+    });
+    this.form.valueChanges
+      .subscribe(data => this.onValueChanged(data));
+  }
+
+  onValueChanged(data?: any) {
+    if (!this.form) { return; }
+    const form = this.form;
+    for (const field in this.formErrors) {
+      if (this.formErrors.hasOwnProperty(field)) {
+        // clear previous error message (if any)
+        this.formErrors[field] = '';
+        const control = form.get(field);
+        if (control && control.dirty && !control.valid) {
+          const messages = this.validationMessages[field];
+          for (const key in control.errors) {
+            if (control.errors.hasOwnProperty(key)) {
+              this.formErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
   }
 
   setPrevNext(dishId: string) {
@@ -42,4 +103,29 @@ export class DishdetailComponent implements OnInit {
     this.location.back();
   }
 
+  onSubmit() {
+    this.getDate();
+    this.dish.comments.push(this.form.value);
+    this.form.reset();
+    this.createForm();
+  }
+
+  getDate() {
+    let commentDate = "";
+
+    const date = new Date();
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthNumber = date.getMonth();
+
+    this.day = date.getDate();
+    this.month = monthNames[monthNumber];
+    this.year = date.getFullYear();
+
+    commentDate = `${this.month} ${this.day}, ${this.year}`;
+    
+    return commentDate;
+  }
+
 }
+

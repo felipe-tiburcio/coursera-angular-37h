@@ -51,7 +51,61 @@
         <p matLine>-- {{ info.author }} {{ info.date | date }}</p>
       </mat-list-item>
     </mat-list>
+
+    <form novalidate [formGroup]="form">
+      <mat-list *ngIf="this.form.valid">
+        {{ this.form.value | json }}
+      </mat-list>
+      <p>
+        <mat-form-field [style.width.px]="400">
+          <input
+            formControlName="author"
+            matInput
+            placeholder="Name"
+            class="example-full-width"
+          />
+          <mat-error *ngIf="formErrors.author">{{
+            formErrors.author
+          }}</mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-slider
+          formControlName="rating"
+          min="1"
+          max="5"
+          step="1"
+          value="5"
+          thumbLabel
+          tickInterval="1"
+        ></mat-slider>
+      </p>
+      <mat-form-field [style.width.px]="400">
+        <textarea
+          formControlName="comment"
+          matInput
+          rows="6"
+          cols="50"
+          placeholder="Your Comment"
+        ></textarea>
+        <mat-error *ngIf="formErrors.comment">
+          {{ formErrors.comment }}
+        </mat-error>
+      </mat-form-field>
+      <p>
+        <button
+          (click)="onSubmit()"
+          mat-button
+          type="submit"
+          class="background-primary text-floral-white"
+          [disabled]="form.invalid"
+        >
+          Submit
+        </button>
+      </p>
+    </form>
   </mat-card>
+
   <div fxFlex [hidden]="dish">
     <mat-spinner></mat-spinner>
     <h4>Loading... Please Wait!</h4>
