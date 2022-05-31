@@ -40,6 +40,7 @@ import { LoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { baseUrl } from './shared/baseUrl';
+import { HighligthDirective } from './directives/highligth.directive';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { baseUrl } from './shared/baseUrl';
     HomeComponent,
     AboutComponent,
     ContactComponent,
-    LoginComponent
+    LoginComponent,
+    HighligthDirective
   ],
   imports: [
     BrowserModule,
