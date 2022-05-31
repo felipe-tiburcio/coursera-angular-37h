@@ -25,6 +25,7 @@ export class DishdetailComponent implements OnInit {
   year: any;
 
   form: FormGroup;
+  dishCopy: Dish;
 
   @ViewChild('fform') formDirective;
 
@@ -61,7 +62,7 @@ export class DishdetailComponent implements OnInit {
       .subscribe(dishIds => this.dishIds = dishIds);
     this.route.params
       .pipe(switchMap((params: Params) => this.dishService.getDish(params["id"])))
-      .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id)},
+      .subscribe(dish => { this.dish = dish; this.dishCopy = dish; this.setPrevNext(dish.id)},
         errMess => this.errMess = <any>errMess);
   }
 
@@ -109,7 +110,18 @@ export class DishdetailComponent implements OnInit {
   onSubmit() {
     this.form.value.date = this.getDate();
     this.getDate();
-    this.dish.comments.push(this.form.value);
+    this.dishCopy.comments.push(this.form.value);
+    this.dishService.putDish(this.dishCopy)
+      .subscribe(dish => {
+        this.dish = dish;
+        this.dishCopy = dish;
+      },
+      errMess => {
+        this.dish = null;
+        this.dishCopy = null;
+        this.errMess = <any>errMess
+      }
+      );
     this.form.reset();
     this.createForm();
   }
